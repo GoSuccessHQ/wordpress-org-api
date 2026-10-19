@@ -18,6 +18,8 @@ final readonly class Theme
 {
     /**
      * @param array<int, int>         $ratings    star count => number of ratings
+     * @param string|null             $parent      slug of the parent theme; the object form served by searches is
+     *                                             reduced to its slug, the full object stays in `raw['parent']`
      * @param list<string>            $screenshots
      * @param array<string, string>   $sections
      * @param array<string, string>   $tags
@@ -92,7 +94,7 @@ final readonly class Theme
             Read::int($data['downloaded'] ?? null),
             Read::int($data['active_installs'] ?? null),
             Read::int($data['screenshot_count'] ?? null),
-            self::ratings($data['ratings'] ?? null),
+            Read::ratings($data['ratings'] ?? null),
             Read::date($data['last_updated'] ?? null, Read::DATE),
             Read::date($data['last_updated_time'] ?? null, Read::DATETIME),
             Read::date($data['creation_time'] ?? null, Read::DATETIME),
@@ -104,22 +106,5 @@ final readonly class Theme
             Read::stringMap($data['versions'] ?? null),
             $data,
         );
-    }
-
-    /**
-     * @return array<int, int>
-     */
-    private static function ratings(mixed $value): array
-    {
-        $ratings = [];
-
-        foreach (Read::array($value) as $stars => $count) {
-            // PHP turns the keys "1".."5" into integers; anything else is skipped.
-            if (\is_int($stars) && \is_int($count)) {
-                $ratings[$stars] = $count;
-            }
-        }
-
-        return $ratings;
     }
 }

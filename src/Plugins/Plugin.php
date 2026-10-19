@@ -102,7 +102,7 @@ final readonly class Plugin
             Read::int($data['support_threads_resolved'] ?? null),
             Read::int($data['active_installs'] ?? null),
             Read::int($data['downloaded'] ?? null),
-            self::ratings($data['ratings'] ?? null),
+            Read::ratings($data['ratings'] ?? null),
             Read::date($data['last_updated'] ?? null, Read::UPDATED),
             Read::date($data['added'] ?? null, Read::DATE),
             Read::stringList($data['requires_plugins'] ?? null),
@@ -117,22 +117,5 @@ final readonly class Plugin
             Read::array($data['compatibility'] ?? null),
             $data,
         );
-    }
-
-    /**
-     * @return array<int, int>
-     */
-    private static function ratings(mixed $value): array
-    {
-        $ratings = [];
-
-        foreach (Read::array($value) as $stars => $count) {
-            // PHP turns the keys "1".."5" into integers; anything else is skipped.
-            if (\is_int($stars) && \is_int($count)) {
-                $ratings[$stars] = $count;
-            }
-        }
-
-        return $ratings;
     }
 }

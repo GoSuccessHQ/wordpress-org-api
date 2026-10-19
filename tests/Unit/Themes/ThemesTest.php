@@ -193,6 +193,17 @@ final class ThemesTest extends TestCase
         self::assertSame([], self::request($http));
     }
 
+    public function testHotTagFallsBackToObjectKey(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"blog":{"name":"Blog","count":5},"x":"junk"}'));
+
+        $tags = self::themes($http)->hotTags();
+
+        self::assertCount(1, $tags);
+        self::assertSame('blog', $tags[0]->slug);
+        self::assertSame(5, $tags[0]->count);
+    }
+
     public function testFeatureList(): void
     {
         $http = new MockHttpClient(new Response(200, self::fixture('feature-list')));

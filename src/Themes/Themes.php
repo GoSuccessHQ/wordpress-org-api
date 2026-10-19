@@ -8,8 +8,6 @@ use Generator;
 use GoSuccess\WordpressOrg\Directory\DirectoryClient;
 use GoSuccess\WordpressOrg\Directory\FieldSelection;
 use GoSuccess\WordpressOrg\Internal\Connection;
-use GoSuccess\WordpressOrg\Internal\Json;
-use GoSuccess\WordpressOrg\Internal\Query;
 use GoSuccess\WordpressOrg\Internal\Read;
 
 /**
@@ -17,8 +15,6 @@ use GoSuccess\WordpressOrg\Internal\Read;
  */
 final readonly class Themes
 {
-    private const string ENDPOINT = 'themes/info/1.2';
-
     /** @var DirectoryClient<ThemeLookup> */
     private DirectoryClient $directory;
 
@@ -26,8 +22,8 @@ final readonly class Themes
      * @internal
      */
     public function __construct(
-        private Connection $connection,
-        private string $apiBaseUri,
+        Connection $connection,
+        string $apiBaseUri,
         int $batchSize,
     ) {
         $this->directory = new DirectoryClient(
@@ -117,13 +113,14 @@ final readonly class Themes
      */
     public function hotTags(?int $number = null): array
     {
-        $data = $this->get('hot_tags', ['number' => $number]);
+        $data = $this->directory->call('hot_tags', ['number' => $number]);
         $tags = [];
 
-        foreach ($data as $tag) {
+        foreach ($data as $key => $tag) {
             if (\is_array($tag) && !array_is_list($tag)) {
                 /** @var array<string, mixed> $tag */
-                $tags[] = ThemeTag::fromArray($tag);
+                // The answer is keyed by slug; use the key when an entry lacks its own.
+                $tags[] = ThemeTag::fromArray($tag + ['slug' => (string) $key]);
             }
         }
 
@@ -139,27 +136,10 @@ final readonly class Themes
     {
         $groups = [];
 
-        foreach ($this->get('feature_list', []) as $group => $features) {
+        foreach ($this->directory->call('feature_list', []) as $group => $features) {
             $groups[(string) $group] = Read::stringList($features);
         }
 
         return $groups;
-    }
-
-    /**
-     * @param array<string, mixed> $request
-     *
-     * @return array<string, mixed>
-     */
-    private function get(string $action, array $request): array
-    {
-        $response = $this->connection->get(\sprintf(
-            '%s/%s/?%s',
-            rtrim($this->apiBaseUri, '/'),
-            self::ENDPOINT,
-            Query::encode(['action' => $action, 'request' => $request]),
-        ));
-
-        return Json::object($response, self::ENDPOINT);
     }
 }

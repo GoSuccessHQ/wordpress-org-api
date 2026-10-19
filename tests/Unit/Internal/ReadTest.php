@@ -136,4 +136,10 @@ final class ReadTest extends TestCase
 
         self::assertSame($expected, $date?->format(\DATE_ATOM));
     }
+
+    public function testRatingsKeepsIntegerStarsAndCounts(): void
+    {
+        self::assertSame([1 => 1, 5 => 9], Read::ratings(['1' => 1, '5' => 9, 'x' => 3, '3' => '4', '2' => null]));
+        self::assertSame([], Read::ratings('none'));
+    }
 }

@@ -104,6 +104,25 @@ final class Read
     }
 
     /**
+     * Star count => number of ratings. PHP turns the keys "1".."5" into integers;
+     * entries with other keys or non-integer counts are skipped.
+     *
+     * @return array<int, int>
+     */
+    public static function ratings(mixed $value): array
+    {
+        $ratings = [];
+
+        foreach (self::array($value) as $stars => $count) {
+            if (\is_int($stars) && \is_int($count)) {
+                $ratings[$stars] = $count;
+            }
+        }
+
+        return $ratings;
+    }
+
+    /**
      * Parse a UTC date; the formats are tried in order. A value is accepted only
      * if formatting it back reproduces the input, so `2026-02-30` is `null`.
      */

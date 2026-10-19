@@ -109,6 +109,11 @@ final class ThemeTest extends TestCase
         self::assertSame('AF themes', $theme->author?->displayName);
     }
 
+    public function testParentAsString(): void
+    {
+        self::assertSame('twentytwentyfive', Theme::fromArray(['parent' => 'twentytwentyfive'])->parent);
+    }
+
     public function testToleratesWrongTypes(): void
     {
         $theme = Theme::fromArray(['name' => ['x'], 'rating' => 'high', 'ratings' => 'none', 'is_community' => 'maybe', 'last_updated' => '2026-02-30', 'tags' => [1, 2]]);

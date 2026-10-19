@@ -112,6 +112,25 @@ final class DirectoryClient
     }
 
     /**
+     * Any other action of the endpoint (e.g. `hot_tags`) as a decoded JSON object.
+     *
+     * @param array<string, mixed> $request
+     *
+     * @return array<string, mixed>
+     */
+    public function call(string $action, array $request): array
+    {
+        $response = $this->connection->get(\sprintf(
+            '%s/%s/?%s',
+            rtrim($this->apiBaseUri, '/'),
+            $this->endpoint,
+            Query::encode(['action' => $action, 'request' => $request]),
+        ));
+
+        return Json::object($response, $this->endpoint);
+    }
+
+    /**
      * Every item from `$startPage` on, fetched page by page as the caller iterates. Stops
      * after the last page, when `pages` is 0 or unreadable, and on an empty page; it never
      * requests a page beyond the last.
