@@ -31,6 +31,8 @@ final readonly class ClientOptions
      * @param float  $maxRetryDelay  Upper bound in seconds for a single wait.
      * @param string $userAgent      Value of the `User-Agent` header.
      * @param int    $batchSize      Slugs per request where an endpoint takes a list.
+     *                               wordpress.org refuses more than 100 plugin slugs
+     *                               per request with `422` (measured 2026-10-19).
      */
     public function __construct(
         public float $timeout = 30.0,

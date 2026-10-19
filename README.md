@@ -95,8 +95,10 @@ $checksums = $wordpress->plugins->checksums('akismet', '5.7.2');    // ?PluginCh
 - **Fields.** The default for `lookup()` switches off every large field, which
   leaves name, slug, version and the closure data (a 3-slug request was 1.5 KB).
   Pass a `FieldSelection` to choose others. 50 slugs per request worked with all
-  fields (measured 2026-10-19, about 200 KB); a larger maximum has not been
-  measured, which is why `batchSize` defaults to 50.
+  fields (measured 2026-10-19, about 200 KB). wordpress.org accepts at most 100
+  plugin slugs per request: 100 worked, 200 were refused with `422` ("A maximum
+  of 100 plugins can be queried at once.", measured 2026-10-19). Keep
+  `batchSize` at 100 or below.
 - **Search** takes `search`, `tags`, `author`, `browse`, `user`, `page`, `perPage` and `fields`
   (themes: `theme` instead of `user`). Several tags are sent comma-joined and
   match any of them (OR); the `tag[]` form is refused by the plugin directory.

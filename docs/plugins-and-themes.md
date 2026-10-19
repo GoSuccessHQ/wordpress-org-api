@@ -28,8 +28,9 @@ $results['no-such-plugin-zzzq']->status; // LookupStatus::NotFound
 - The default `FieldSelection::minimalPlugin()` (`minimalTheme()`) turns off the
   large fields. Use `new FieldSelection()` for wordpress.org's defaults, or
   `->with('sections', true)` to add one.
-- Measured on 2026-10-19: 50 slugs with all fields worked (about 200 KB). A larger
-  maximum is unmeasured.
+- Measured on 2026-10-19: 50 slugs with all fields worked (about 200 KB); 100
+  slugs with the minimal fields worked; 200 were refused with `422` ("A maximum
+  of 100 plugins can be queried at once."). Keep `batchSize` at 100 or below.
 
 ## Storing chunk by chunk
 

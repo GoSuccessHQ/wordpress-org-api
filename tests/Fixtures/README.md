@@ -19,6 +19,12 @@ The response contained: name, slug, version, author, author_profile, contributor
 
 Measured once on 2026-10-19 with `curl -g` (package User-Agent): `https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slugs]=Akismet,hello-dolly` plus large fields switched off. The upper-case slug is not normalized: the response key is `Akismet` exactly as sent, and its entry is `{"error":"Invalid plugin slug."}` (so it reads as `NotFound`), while `hello-dolly` was found. The client therefore sends slugs lower-cased and matches response keys case-insensitively, which also covers a server that keys by a different spelling.
 
+## Batch size
+
+- 2026-10-19, live: `plugin_information` with `request[slugs]` of 100 popular
+  plugins (minimal fields) → 200, all Found; 200 slugs → `422`
+  `A maximum of 100 plugins can be queried at once.`
+
 ## Search and checksums
 
 | File | Source | Captured |
