@@ -1,0 +1,17 @@
+{
+    "custom-menu": {
+        "name": "Custom menu",
+        "slug": "custom-menu",
+        "count": 13317
+    },
+    "featured-images": {
+        "name": "Featured images",
+        "slug": "featured-images",
+        "count": 13006
+    },
+    "threaded-comments": {
+        "name": "Threaded comments",
+        "slug": "threaded-comments",
+        "count": 12632
+    }
+}

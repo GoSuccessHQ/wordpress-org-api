@@ -1,0 +1,72 @@
+{
+    "name": "Twenty Twenty-Five",
+    "slug": "twentytwentyfive",
+    "version": "1.5",
+    "preview_url": "https://wp-themes.com/twentytwentyfive/",
+    "author": {
+        "user_nicename": "wordpressdotorg",
+        "profile": "https://profiles.wordpress.org/wordpressdotorg/",
+        "avatar": "https://secure.gravatar.com/avatar/178f40079143ff7464125e4fbc88e62024a16442920a6a3d6dfa3d7e626be20d?s=96&d=monsterid&r=g",
+        "display_name": "WordPress.org",
+        "author": "the WordPress team",
+        "author_url": "https://wordpress.org"
+    },
+    "screenshot_url": "//ts.w.org/wp-content/themes/twentytwentyfive/screenshot.png?ver=1.5",
+    "screenshot_count": 1,
+    "screenshots": [
+        "https://wp-themes.com/wp-content/themes/twentytwentyfive/screenshot.png"
+    ],
+    "theme_url": "https://wordpress.org/themes/twentytwentyfive/",
+    "ratings": {
+        "1": 1,
+        "2": 2,
+        "3": 2,
+        "4": 0,
+        "5": 9
+    },
+    "rating": 80,
+    "num_ratings": 14,
+    "reviews_url": "https://wordpress.org/support/theme/twentytwentyfive/reviews/",
+    "downloaded": 10937559,
+    "active_installs": 1000000,
+    "last_updated": "2026-05-20",
+    "last_updated_time": "2026-05-20 21:54:25",
+    "creation_time": "2024-11-13 00:56:57",
+    "homepage": "https://wordpress.org/themes/twentytwentyfive/",
+    "sections": {
+        "description": "Twenty Twenty-Five emphasizes simplicity and adaptability. It offers flexible design options, supported by a variety of patterns for different page types, such as services and landing pages, making it ideal for building personal blogs, professional portfolios, online magazines, or business websites."
+    },
+    "download_link": "https://downloads.wordpress.org/theme/twentytwentyfive.1.5.zip",
+    "tags": {
+        "accessibility-ready": "Accessibility ready",
+        "block-patterns": "Block editor patterns",
+        "block-styles": "Block editor styles",
+        "blog": "Blog",
+        "custom-colors": "Custom colors",
+        "custom-logo": "Custom logo",
+        "custom-menu": "Custom menu",
+        "editor-style": "Editor style",
+        "featured-images": "Featured images",
+        "full-site-editing": "Block themes",
+        "news": "News",
+        "one-column": "One column",
+        "portfolio": "Portfolio",
+        "rtl-language-support": "RTL language support",
+        "sticky-post": "Sticky post",
+        "style-variations": "Style variations",
+        "threaded-comments": "Threaded comments",
+        "translation-ready": "Translation ready",
+        "wide-blocks": "Wide blocks"
+    },
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/theme/twentytwentyfive.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/theme/twentytwentyfive.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/theme/twentytwentyfive.1.2.zip"
+    },
+    "requires": "6.7",
+    "requires_php": "7.2",
+    "is_commercial": false,
+    "external_support_url": false,
+    "is_community": true,
+    "external_repository_url": ""
+}
