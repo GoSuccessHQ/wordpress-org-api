@@ -27,6 +27,8 @@ that does not exist (measured 2026-10-19), so it cannot detect unknown slugs.
 ## Patterns
 
 ```php
+use GoSuccess\WordpressOrg\Patterns\PatternQuery;
+
 $page = $wordpress->patterns->search(new PatternQuery(search: 'button', perPage: 2, page: 2));
 $page->patterns; $page->total; $page->totalPages; // totals from the x-wp-* headers
 ```
@@ -38,6 +40,8 @@ $page->patterns; $page->total; $page->totalPages; // totals from the x-wp-* head
 ## Events
 
 ```php
+use GoSuccess\WordpressOrg\Events\EventQuery;
+
 $list = $wordpress->events->upcoming(new EventQuery(location: 'Dresden', number: 3));
 $list->error;    // e.g. "no_location_available" when the location is unknown
 $list->location; // EventLocation

@@ -11,31 +11,36 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 #[CoversNothing]
 final class CoreLiveTest extends LiveTestCase
 {
+    private static ?string $latest = null;
+
     public function testLatestVersionLooksLikeAVersion(): void
     {
-        $latest = $this->client->core->versionCheck()->latest();
-
-        self::assertNotNull($latest);
-        self::assertMatchesRegularExpression('/^\d+\.\d+(\.\d+)?$/', $latest);
+        self::assertMatchesRegularExpression('/^\d+\.\d+(\.\d+)?$/', $this->latest());
     }
 
-    public function testStabilityOfTheLatestVersionIsLatest(): void
+    public function testStabilityOfTheLatestVersion(): void
     {
-        $latest = $this->client->core->versionCheck()->latest();
-
-        self::assertNotNull($latest);
-        self::assertSame(Stability::Latest, $this->client->core->stability($latest));
+        // The two endpoints can briefly disagree while a release is rolled out.
+        self::assertContains($this->client->core->stability($this->latest()), [Stability::Latest, Stability::Outdated]);
     }
 
     public function testChecksumsOfTheLatestVersionAreNotEmpty(): void
     {
-        $latest = $this->client->core->versionCheck()->latest();
-
-        self::assertNotNull($latest);
-
-        $checksums = $this->client->core->checksums($latest);
+        $checksums = $this->client->core->checksums($this->latest());
 
         self::assertNotNull($checksums);
         self::assertNotSame([], $checksums->files);
+    }
+
+    /**
+     * One version-check request per run, shared by the tests.
+     */
+    private function latest(): string
+    {
+        self::$latest ??= $this->client->core->versionCheck()->latest();
+
+        self::assertNotNull(self::$latest);
+
+        return self::$latest;
     }
 }

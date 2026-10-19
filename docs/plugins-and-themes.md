@@ -52,6 +52,8 @@ chunk are never reported as `Unknown`.
 ## Search
 
 ```php
+use GoSuccess\WordpressOrg\Plugins\PluginQuery;
+
 $page = $wordpress->plugins->search(new PluginQuery(search: 'backup', tags: ['seo'], perPage: 30));
 $page->page; $page->pages; $page->results; $page->plugins;
 

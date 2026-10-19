@@ -67,6 +67,8 @@ returns everything at once (see "Error handling" for how they differ on failure)
 ## Plugins and themes
 
 ```php
+use GoSuccess\WordpressOrg\Plugins\PluginQuery;
+
 $results = $wordpress->plugins->lookup(['akismet', 'hello-dolly']); // minimal fields
 $lookup = $wordpress->plugins->information('akismet');              // default fields
 $page = $wordpress->plugins->search(new PluginQuery(search: 'seo', tags: ['seo', 'backup']));
@@ -133,6 +135,9 @@ See [docs/core.md](docs/core.md).
 ## Translations, stats, patterns, events and secret keys
 
 ```php
+use GoSuccess\WordpressOrg\Events\EventQuery;
+use GoSuccess\WordpressOrg\Patterns\PatternQuery;
+
 $wordpress->translations->core('6.8');                 // list<Translation>
 $wordpress->translations->plugin('akismet', '5.3');
 $wordpress->stats->wordpress();                        // array<string, float>, share in percent
@@ -258,7 +263,8 @@ case, and never follow redirects. Honor `$request->timeout` and
 
 - [docs/plugins-and-themes.md](docs/plugins-and-themes.md),
   [docs/core.md](docs/core.md), [docs/more-endpoints.md](docs/more-endpoints.md)
-- [examples/plugin-status.php](examples/plugin-status.php),
+- [examples/bootstrap.php](examples/bootstrap.php) (shared setup),
+  [examples/plugin-status.php](examples/plugin-status.php),
   [examples/core.php](examples/core.php),
   [examples/checksums.php](examples/checksums.php)
 - [WordPress.org API on the Codex](https://codex.wordpress.org/WordPress.org_API),

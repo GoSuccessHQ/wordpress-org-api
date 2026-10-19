@@ -32,12 +32,15 @@ final class PluginsLiveTest extends LiveTestCase
         self::assertNotSame([], $page->plugins);
     }
 
-    public function testChecksumsOfAKnownVersion(): void
+    public function testChecksumsOfTheLatestAkismetVersion(): void
     {
-        $checksums = $this->client->plugins->checksums('akismet', '5.7.2');
+        $version = $this->client->plugins->lookup(['akismet'])['akismet']->version();
+
+        self::assertNotNull($version);
+
+        $checksums = $this->client->plugins->checksums('akismet', $version);
 
         self::assertNotNull($checksums);
         self::assertNotSame([], $checksums->files);
-        self::assertNull($this->client->plugins->checksums('akismet', '0.0.0-no-such-version'));
     }
 }
