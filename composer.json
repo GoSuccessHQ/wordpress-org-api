@@ -1,0 +1,66 @@
+{
+    "name": "gosuccess/wordpress-org-api",
+    "description": "A modern, strongly-typed, dependency-free PHP client for the public wordpress.org API.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "wordpress",
+        "wordpress.org",
+        "plugins",
+        "themes",
+        "api",
+        "client"
+    ],
+    "homepage": "https://github.com/GoSuccessHQ/wordpress-org-api",
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "GoSuccess GmbH",
+            "homepage": "https://gosuccess.io"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/GoSuccessHQ/wordpress-org-api/issues",
+        "source": "https://github.com/GoSuccessHQ/wordpress-org-api"
+    },
+    "require": {
+        "php": "^8.4",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpstan/phpstan": "^2.2",
+        "phpunit/phpunit": "^13.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "GoSuccess\\WordpressOrg\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GoSuccess\\WordpressOrg\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration",
+        "stan": "phpstan analyse --memory-limit=2G",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "check": [
+            "@cs",
+            "@stan",
+            "@test"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "8.4.1"
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
