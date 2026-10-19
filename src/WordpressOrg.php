@@ -32,10 +32,10 @@ final class WordpressOrg
         ClientOptions $options = new ClientOptions(),
         ?HttpClient $httpClient = null,
         string $apiBaseUri = self::DEFAULT_API_BASE_URI,
-        public readonly string $downloadsBaseUri = self::DEFAULT_DOWNLOADS_BASE_URI,
+        string $downloadsBaseUri = self::DEFAULT_DOWNLOADS_BASE_URI,
     ) {
         $connection = new Connection($options, $httpClient ?? new CurlHttpClient($options->timeout, $options->connectTimeout));
 
-        $this->plugins = new Plugins($connection, $apiBaseUri, $options->batchSize);
+        $this->plugins = new Plugins($connection, $apiBaseUri, $downloadsBaseUri, $options->batchSize);
     }
 }

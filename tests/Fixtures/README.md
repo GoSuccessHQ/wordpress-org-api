@@ -18,3 +18,14 @@ The response contained: name, slug, version, author, author_profile, contributor
 ## Slug casing in a batch
 
 Measured once on 2026-10-19 with `curl -g` (package User-Agent): `https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slugs]=Akismet,hello-dolly` plus large fields switched off. The upper-case slug is not normalized: the response key is `Akismet` exactly as sent, and its entry is `{"error":"Invalid plugin slug."}` (so it reads as `NotFound`), while `hello-dolly` was found. The client therefore sends slugs in the caller's spelling and matches response keys case-insensitively, which also covers a server that keys by the lower-case slug.
+
+## Search and checksums
+
+| File | Source | Captured |
+| --- | --- | --- |
+| `plugins/checksums-akismet-5.7.2.json` | `https://downloads.wordpress.org/plugin-checksums/akismet/5.7.2.json`, `files` shortened to five entries | 2026-10-19 |
+
+Further measurements on 2026-10-19 (`curl -g`, package User-Agent), none stored as fixtures:
+
+- Several tags: `request[tag][]=seo&request[tag][]=backup` (also with `per_page` and field switches) answers `{"error":"Invalid Input"}`. `request[tag]=seo,backup` works and matches plugins with any of the tags (3080 results, mixed seo and backup plugins). `PluginQuery` therefore sends the tags comma separated.
+- Hash form: the checksums of `akismet/5.7.2`, `elementor/4.3.5`, `woocommerce/11.2.1` and `jetpack/16.3.1` (47 to 5488 files each) carry `md5` and `sha256` as plain strings for every file. No list form was seen; the model accepts both and always exposes lists. The versions of woocommerce, jetpack and contact-form-7 came from one `plugin_information` request with `request[slugs]` and large fields switched off.

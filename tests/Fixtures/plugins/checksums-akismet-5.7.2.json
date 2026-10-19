@@ -1,0 +1,28 @@
+{
+  "plugin": "akismet",
+  "version": "5.7.2",
+  "source": "https://plugins.svn.wordpress.org/akismet/tags/5.7.2/",
+  "zip": "https://downloads.wordpress.org/plugins/akismet.5.7.2.zip",
+  "files": {
+    ".htaccess": {
+      "md5": "95ee2e6ff215e9579a8c2dd5b22270a1",
+      "sha256": "63553e7f320285fe2417cdb00664a136958d70baa07d7325e86f0847f11dd17c"
+    },
+    "LICENSE.txt": {
+      "md5": "b234ee4d69f5fce4486a80fdaf4a4263",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "_inc/akismet-admin.css": {
+      "md5": "36e03d511ba4a6a44cd6009b241e16c0",
+      "sha256": "6bf26af2a90b244a53b8b52d87e3541c48a8d38f22ab7145370d26dc63d03a2c"
+    },
+    "_inc/akismet-admin.js": {
+      "md5": "58a4f2ddad68d385686b541688c22b08",
+      "sha256": "c197a9f02649a29510c12079600962eb696fb950ac7bc7d55c66e63128a47ea4"
+    },
+    "_inc/akismet-frontend.js": {
+      "md5": "16afc5423ae654844c7e650e92dba4d3",
+      "sha256": "9c5694d541bc0ecce9d203117d0ae57a34fa7a30859fcbd0fa603981e2f3f709"
+    }
+  }
+}

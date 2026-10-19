@@ -6,8 +6,10 @@ namespace GoSuccess\WordpressOrg\Plugins;
 
 use Generator;
 use GoSuccess\WordpressOrg\Directory\DirectoryClient;
+use GoSuccess\WordpressOrg\Directory\Entry;
 use GoSuccess\WordpressOrg\Directory\FieldSelection;
 use GoSuccess\WordpressOrg\Internal\Connection;
+use GoSuccess\WordpressOrg\Internal\Json;
 
 /**
  * The plugin directory (`plugins/info/1.2`).
@@ -20,8 +22,12 @@ final readonly class Plugins
     /**
      * @internal
      */
-    public function __construct(Connection $connection, string $apiBaseUri, int $batchSize)
-    {
+    public function __construct(
+        private Connection $connection,
+        string $apiBaseUri,
+        private string $downloadsBaseUri,
+        int $batchSize,
+    ) {
         $this->directory = new DirectoryClient(
             $connection,
             $apiBaseUri,
@@ -71,5 +77,57 @@ final readonly class Plugins
     public function information(string $slug, ?FieldSelection $fields = null): PluginLookup
     {
         return $this->directory->information($slug, $fields ?? new FieldSelection());
+    }
+
+    /**
+     * One page of a directory search, starting at `$query->page`. Entries that are not
+     * objects are skipped; `pages` and `results` are 0 when the answer lacks them.
+     */
+    public function search(PluginQuery $query): PluginPage
+    {
+        $result = $this->directory->query('query_plugins', $query->toRequest($query->page));
+
+        return new PluginPage(
+            $result['page'] === 0 ? $query->page : $result['page'],
+            $result['pages'],
+            $result['results'],
+            array_map(Plugin::fromArray(...), $result['items']),
+        );
+    }
+
+    /**
+     * Every match from `$query->page` on, requesting the next page only when the iterator
+     * asks for it. Stops after the last page, when `pages` is 0 or missing, and on an empty page.
+     *
+     * @return Generator<int, Plugin>
+     */
+    public function searchAll(PluginQuery $query): Generator
+    {
+        foreach ($this->directory->queryAll('query_plugins', $query->toRequest($query->page), $query->page) as $item) {
+            yield Plugin::fromArray($item);
+        }
+    }
+
+    /**
+     * File hashes of a released version, or `null` if there is none. A slug or version that
+     * cannot be put in the path safely also gives `null`, without a request. The slug is
+     * sent lower-cased, the version as given.
+     */
+    public function checksums(string $slug, string $version): ?PluginChecksums
+    {
+        if (!Entry::isSendable($slug) || !Entry::isSendable($version)) {
+            return null;
+        }
+
+        $response = $this->connection->get(
+            \sprintf('%s/plugin-checksums/%s/%s.json', rtrim($this->downloadsBaseUri, '/'), strtolower($slug), $version),
+            [404],
+        );
+
+        if ($response->statusCode === 404) {
+            return null;
+        }
+
+        return PluginChecksums::fromArray(Json::object($response, 'plugin-checksums'));
     }
 }
