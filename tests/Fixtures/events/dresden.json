@@ -1,0 +1,63 @@
+{
+ "sandboxed": false,
+ "error": null,
+ "location": {
+  "description": "Dresden",
+  "latitude": "51.05089",
+  "longitude": "13.73832",
+  "country": "DE"
+ },
+ "events": [
+  {
+   "type": "meetup",
+   "title": "WordPress Meetup Leipzig - Werkstatt",
+   "url": "https://www.meetup.com/leipzig-wordpress-meetup/events/312268632/",
+   "meetup": "WordPress Meetup Leipzig",
+   "meetup_url": "https://www.meetup.com/Leipzig-WordPress-Meetup/",
+   "date": "2026-11-03 19:00:00",
+   "end_date": "2026-11-03 21:00:00",
+   "start_unix_timestamp": 1793728800,
+   "end_unix_timestamp": 1793736000,
+   "location": {
+    "location": "Leipzig, Germany",
+    "country": "de",
+    "latitude": 51.332104,
+    "longitude": 12.37352
+   }
+  },
+  {
+   "type": "meetup",
+   "title": "#wpdrs № 90 | Offene WordPress-Werkstatt",
+   "url": "https://www.meetup.com/wp-meetup-dresden/events/316197217/",
+   "meetup": "WordPress Meetup Dresden",
+   "meetup_url": "https://www.meetup.com/wp-meetup-dresden/",
+   "date": "2026-11-11 19:00:00",
+   "end_date": "2026-11-11 22:00:00",
+   "start_unix_timestamp": 1794420000,
+   "end_unix_timestamp": 1794430800,
+   "location": {
+    "location": "Dresden, Germany",
+    "country": "de",
+    "latitude": 51.02819,
+    "longitude": 13.736782
+   }
+  },
+  {
+   "type": "meetup",
+   "title": "WordPress Meetup Leipzig - #70 KI im WordPress-Alltag",
+   "url": "https://www.meetup.com/leipzig-wordpress-meetup/events/316777279/",
+   "meetup": "WordPress Meetup Leipzig",
+   "meetup_url": "https://www.meetup.com/Leipzig-WordPress-Meetup/",
+   "date": "2026-12-01 19:00:00",
+   "end_date": "2026-12-01 21:00:00",
+   "start_unix_timestamp": 1796148000,
+   "end_unix_timestamp": 1796155200,
+   "location": {
+    "location": "Leipzig, Germany",
+    "country": "de",
+    "latitude": 51.332104,
+    "longitude": 12.37352
+   }
+  }
+ ]
+}

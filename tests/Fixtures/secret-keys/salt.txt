@@ -1,0 +1,8 @@
+define('AUTH_KEY',         'made-up value with a quote \' inside');
+define('SECURE_AUTH_KEY',  'fixture-secure-auth-key-0002');
+define('LOGGED_IN_KEY',    'fixture-logged-in-key-0003 with back\\slash');
+define('NONCE_KEY',        'fixture-nonce-key-0004');
+define('AUTH_SALT',        'fixture-auth-salt-0005');
+define('SECURE_AUTH_SALT', 'fixture-secure-auth-salt-0006');
+define('LOGGED_IN_SALT',   'fixture-logged-in-salt-0007');
+define('NONCE_SALT',       'fixture-nonce-salt-0008');

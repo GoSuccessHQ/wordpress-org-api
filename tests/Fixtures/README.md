@@ -86,3 +86,17 @@ All captured on 2026-10-19 from `https://api.wordpress.org/` with `curl -g` and 
 - `iso` keys arrive as `"1"`, `"2"`; PHP turns them into int keys, so `Translation::$iso` is `array<array-key, string>`. The same applies to an all-digit share key; the captured keys (`8.3`, `MariaDB 10.11`) are not affected.
 - Downloads: zero comes as the number `0`, every other count as a string (`"25688"`); both read as int.
 - Version-like keys in the stats (`7.4`, `10.11` inside a longer label) stay strings. The stats paths for WordPress, PHP, MySQL and locale end with `/`; the plugin one does not.
+
+## Patterns, events and secret keys
+
+Captured on 2026-10-19 from `https://api.wordpress.org/` with the package User-Agent.
+
+| File | Source | Captured |
+| --- | --- | --- |
+| `patterns/search.json` | `patterns/1.0/?search=button&per_page=2`, `content.rendered` and `pattern_content` cut to 200 characters | 2026-10-19 |
+| `events/dresden.json` | `events/1.0/?location=Dresden&number=3`, complete | 2026-10-19 |
+| `events/error.json` | `events/1.0/?location=zzzqxq`, complete | 2026-10-19 |
+| `secret-keys/salt.txt` | written by hand in the real format with made-up values (one with `\'`, one with `\\`); the real endpoint was never requested | n/a |
+
+- Pattern headers of the first page: `x-wp-total: 387`, `x-wp-totalpages: 194` (the same on `page=2`). Paging was measured once: `search=button&per_page=2&page=2` answered other patterns (ids 80683, 57748 against 406479, 87098), so `page` and `per_page` are the paging arguments. The `link` header carries `rel="next"`/`rel="prev"`, which the client does not use.
+- Events: a location that cannot be resolved (`location=zzzqxq`) answers HTTP 200 `{"sandboxed":false,"error":"no_location_available","location":false,"events":[]}`. A successful answer has `"error": null`. The list location carries `description`, string coordinates and an upper-case `country`; an event location carries `location` (text), a lower-case `country` and numeric coordinates.
