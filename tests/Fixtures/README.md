@@ -60,3 +60,12 @@ All captured on 2026-10-19 from `https://api.wordpress.org/core/` with `curl` an
 - Offers carry `packages` with `full`, `no_content`, `new_bundled`, `partial` and `rollback`; `partial` and `rollback` were `false`, as was `partial_version`. Some offers have extra keys such as `new_files`, which `Offer::$raw` keeps.
 - Unknown version: `checksums/1.0/?version=9.9.9&locale=en_US` answered HTTP 200 with `{"checksums":false}`. The "keyed by version" form for some inputs was not observed, so it is not handled.
 - wordpress.org notes that MD5 hashes detect accidental changes only, not malicious ones.
+| `core/credits.json` | `credits/1.1/?version=7.1`, shortened to two entries per group (four groups: two `titles`, one `list`, one `libraries`; `compact` did not occur, it is covered by an inline test) | 2026-10-19 |
+| `core/importers.json` | `importers/1.1/`, complete (an object keyed by importer under `importers`) | 2026-10-19 |
+| `core/browse-happy.json` | `browse-happy/1.1/`, POST form `useragent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36` | 2026-10-19 |
+| `core/serve-happy.json` | `serve-happy/1.0/?php_version=7.4.0` | 2026-10-19 |
+
+- Credits: group `name` can be `false` (no heading); `props` carries `placeholders` and a `%s` in its name, the top-level `data` is `profiles` (URL template) and `version`. The `importer-id` can differ from the key (`movabletype` has `mt`).
+- Importers and locale: `importers/1.1/?locale=de_DE` returned a body byte-identical to the request without it (one request, 2026-10-19), so `Core::importers()` takes no locale. The meta.trac source is behind a bot check and was not read.
+- Handbook: no fixture; the body is a plain URL and the unit test uses the URL from the spec.
+- Serve Happy: the 400 for a missing `php_version` is not stored; the test uses the spec's `missing_param` form.

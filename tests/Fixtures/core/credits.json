@@ -1,0 +1,71 @@
+{
+  "groups": {
+    "core-developers": {
+      "name": "Noteworthy Contributors",
+      "type": "titles",
+      "shuffle": false,
+      "data": {
+        "annezazu": [
+          "Anne McCarthy",
+          "4f50dc56c80eceb636a7ef7d036a019a7d4189e8b3f87d9c899e848248ef36d8",
+          "annezazu",
+          "Release Lead"
+        ],
+        "benjamin_zekavica": [
+          "Benjamin Zekavica",
+          "08ceef1ebfdbe73f8b1f4e47f5c249efe9796ecea941877abebb70e6d7136515",
+          "benjamin_zekavica",
+          "Release Coordination"
+        ]
+      }
+    },
+    "contributing-developers": {
+      "name": false,
+      "type": "titles",
+      "shuffle": true,
+      "data": {
+        "youknowriad": [
+          "Riad Benguella",
+          "4358d28c1e85f9015cb3363e024e2b238bccb44d05c4b84e9a38aafef0d83ac9",
+          "youknowriad",
+          ""
+        ],
+        "dmsnell": [
+          "Dennis Snell",
+          "b5292a7fb1ae9f9cce40615cb7715e799a69d78bad79b99ca9d14494c90a1b8b",
+          "dmsnell",
+          ""
+        ]
+      }
+    },
+    "props": {
+      "name": "Core Contributors to WordPress %s",
+      "placeholders": [
+        "7.1"
+      ],
+      "type": "list",
+      "data": {
+        "ishihara-takashi": "1shiharaT",
+        "aagam94": "Aagam Shah"
+      }
+    },
+    "libraries": {
+      "name": "External Libraries",
+      "type": "libraries",
+      "data": [
+        [
+          "Babel Polyfill",
+          "https://babeljs.io/docs/babel-polyfill"
+        ],
+        [
+          "Backbone.js",
+          "https://backbonejs.org/"
+        ]
+      ]
+    }
+  },
+  "data": {
+    "profiles": "https://profiles.wordpress.org/%s/",
+    "version": "7.1"
+  }
+}

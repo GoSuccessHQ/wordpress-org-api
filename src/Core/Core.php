@@ -10,7 +10,8 @@ use GoSuccess\WordpressOrg\Internal\Query;
 use GoSuccess\WordpressOrg\Internal\Read;
 
 /**
- * WordPress core (`core/…`): releases, their stability and file hashes.
+ * WordPress core (`core/…`): releases, their stability and file hashes, credits,
+ * importers, handbook links and the Browse Happy and Serve Happy checks.
  */
 final readonly class Core
 {
@@ -75,6 +76,78 @@ final readonly class Core
         }
 
         return new CoreChecksums($version, $locale, Read::stringMap($data['checksums']));
+    }
+
+    /**
+     * The credits of a release (`core/credits/1.1`), optionally in a locale.
+     */
+    public function credits(string $version, ?string $locale = null): Credits
+    {
+        $endpoint = 'core/credits/1.1';
+        $response = $this->connection->get($this->uri($endpoint, ['version' => $version, 'locale' => $locale]));
+
+        return Credits::fromArray(Json::object($response, $endpoint));
+    }
+
+    /**
+     * The importers WordPress offers (`core/importers/1.1`). The endpoint ignores a
+     * `locale` parameter (measured), so there is none.
+     *
+     * @return list<Importer>
+     */
+    public function importers(): array
+    {
+        $endpoint = 'core/importers/1.1';
+        $data = Json::object($this->connection->get($this->uri($endpoint, [])), $endpoint);
+        $importers = [];
+
+        foreach (Read::array($data['importers'] ?? null) as $key => $importer) {
+            if (\is_array($importer)) {
+                $importers[] = Importer::fromArray($importer, (string) $key);
+            }
+        }
+
+        return $importers;
+    }
+
+    /**
+     * The handbook page of a function (`core/handbook/1.0`), or `null` if the answer is
+     * not an `https://` URL.
+     */
+    public function handbookUrl(string $function, string $version): ?string
+    {
+        $response = $this->connection->get($this->uri('core/handbook/1.0', [
+            'function' => $function,
+            'version' => $version,
+            'redirect' => 'false',
+        ]));
+        $url = trim($response->body);
+
+        return str_starts_with($url, 'https://') && preg_match('/\s/', $url) !== 1 ? $url : null;
+    }
+
+    /**
+     * The browser wordpress.org recognizes in a User-Agent (`core/browse-happy/1.1`).
+     */
+    public function browseHappy(string $userAgent): Browser
+    {
+        $endpoint = 'core/browse-happy/1.1';
+        $response = $this->connection->postForm($this->uri($endpoint, []), ['useragent' => $userAgent]);
+
+        return Browser::fromArray(Json::object($response, $endpoint));
+    }
+
+    /**
+     * How WordPress rates a PHP version (`core/serve-happy/1.0`).
+     *
+     * @throws \GoSuccess\WordpressOrg\Exception\BadRequestException if the version is missing
+     */
+    public function serveHappy(string $phpVersion): PhpSupport
+    {
+        $endpoint = 'core/serve-happy/1.0';
+        $response = $this->connection->get($this->uri($endpoint, ['php_version' => $phpVersion]));
+
+        return PhpSupport::fromArray(Json::object($response, $endpoint));
     }
 
     /**
