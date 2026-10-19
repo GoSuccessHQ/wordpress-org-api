@@ -18,7 +18,8 @@ final class Entry
      */
     public static function classify(mixed $entry): array
     {
-        if (!\is_array($entry)) {
+        // A non-empty list is not an object; `{}` decodes to `[]` and stays an (empty) object.
+        if (!\is_array($entry) || ($entry !== [] && array_is_list($entry))) {
             return [LookupStatus::Unknown, null, null];
         }
 
@@ -41,6 +42,8 @@ final class Entry
      */
     public static function isSendable(string $slug): bool
     {
-        return preg_match('/^[A-Za-z0-9._-]+$/D', $slug) === 1;
+        // At least one letter or digit, so `.` and `..` never become path segments.
+        return preg_match('/^[A-Za-z0-9._-]+$/D', $slug) === 1
+            && preg_match('/[A-Za-z0-9]/', $slug) === 1;
     }
 }

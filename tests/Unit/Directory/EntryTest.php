@@ -79,6 +79,21 @@ final class EntryTest extends TestCase
         self::assertSame([LookupStatus::Unknown, null, null], Entry::classify(null));
     }
 
+    public function testListEntryIsUnknown(): void
+    {
+        self::assertSame([LookupStatus::Unknown, null, null], Entry::classify(['akismet']));
+    }
+
+    public function testNonStringErrorIsNotFoundWithoutText(): void
+    {
+        self::assertSame([LookupStatus::NotFound, null, null], Entry::classify(['error' => 5]));
+    }
+
+    public function testStringClosedFlagIsNotClosed(): void
+    {
+        self::assertSame(LookupStatus::Found, Entry::classify(['closed' => 'true'])[0]);
+    }
+
     #[DataProvider('slugs')]
     public function testSendableSlugs(string $slug, bool $expected): void
     {
@@ -96,6 +111,12 @@ final class EntryTest extends TestCase
         yield 'comma' => ['a,b', false];
         yield 'space' => ['a b', false];
         yield 'non-ascii' => ['ä', false];
+        yield 'dot' => ['.', false];
+        yield 'dots' => ['..', false];
+        yield 'three dots' => ['...', false];
+        yield 'dash only' => ['-', false];
+        yield 'version' => ['1.0', true];
+        yield 'dotted' => ['a.b', true];
         yield 'trailing newline' => ["akismet\n", false];
     }
 }
