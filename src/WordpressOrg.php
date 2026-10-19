@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GoSuccess\WordpressOrg;
 
+use GoSuccess\WordpressOrg\Core\Core;
 use GoSuccess\WordpressOrg\Http\CurlHttpClient;
 use GoSuccess\WordpressOrg\Http\HttpClient;
 use GoSuccess\WordpressOrg\Internal\Connection;
@@ -22,6 +23,8 @@ final class WordpressOrg
 
     public const string DEFAULT_DOWNLOADS_BASE_URI = 'https://downloads.wordpress.org';
 
+    public readonly Core $core;
+
     public readonly Plugins $plugins;
 
     public readonly Themes $themes;
@@ -39,6 +42,7 @@ final class WordpressOrg
     ) {
         $connection = new Connection($options, $httpClient ?? new CurlHttpClient($options->timeout, $options->connectTimeout));
 
+        $this->core = new Core($connection, $apiBaseUri);
         $this->plugins = new Plugins($connection, $apiBaseUri, $downloadsBaseUri, $options->batchSize);
         $this->themes = new Themes($connection, $apiBaseUri, $options->batchSize);
     }

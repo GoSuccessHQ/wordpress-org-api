@@ -1,0 +1,11 @@
+{
+    "1.0.2": "insecure",
+    "1.2.1": "insecure",
+    "2.0": "insecure",
+    "6.8.3": "insecure",
+    "7.0.7": "outdated",
+    "7.1.3": "latest",
+    "4.7.38": "outdated",
+    "4.8.33": "outdated",
+    "4.9.34": "outdated"
+}

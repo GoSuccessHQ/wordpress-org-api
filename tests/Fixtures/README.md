@@ -46,3 +46,17 @@ The all-fields response contained: name, slug, version, preview_url, author, scr
 
 - Tags: one request, `request[tag]=one-column,portfolio&request[per_page]=3`, answered normally (3564 results, the three returned themes carried both tags). `ThemeQuery` therefore sends the tags comma separated, as `PluginQuery` does; the `request[tag][]` form was not tried for themes.
 - Closed themes: none was looked for, so the closed classification for themes is unverified. `ThemeLookup` follows the plugin rule: `closed: true` or `error: "closed"` is `Closed`, any other `error` is `NotFound`.
+
+## Core
+
+All captured on 2026-10-19 from `https://api.wordpress.org/core/` with `curl` and the package User-Agent.
+
+| File | Source | Captured |
+| --- | --- | --- |
+| `core/version-check.json` | `version-check/1.7/` without parameters, complete (26 offers, 7.1.3 down to 4.7.38; `translations` was an empty list) | 2026-10-19 |
+| `core/stable-check.json` | `stable-check/1.0/`, shortened from 959 entries (934 `insecure`, 24 `outdated`, 1 `latest`) to nine | 2026-10-19 |
+| `core/checksums.json` | `checksums/1.0/?version=6.8.3&locale=en_US`, shortened from 3,230 files to five | 2026-10-19 |
+
+- Offers carry `packages` with `full`, `no_content`, `new_bundled`, `partial` and `rollback`; `partial` and `rollback` were `false`, as was `partial_version`. Some offers have extra keys such as `new_files`, which `Offer::$raw` keeps.
+- Unknown version: `checksums/1.0/?version=9.9.9&locale=en_US` answered HTTP 200 with `{"checksums":false}`. The "keyed by version" form for some inputs was not observed, so it is not handled.
+- wordpress.org notes that MD5 hashes detect accidental changes only, not malicious ones.
