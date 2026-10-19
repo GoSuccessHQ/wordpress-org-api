@@ -9,7 +9,9 @@ use GoSuccess\WordpressOrg\Http\CurlHttpClient;
 use GoSuccess\WordpressOrg\Http\HttpClient;
 use GoSuccess\WordpressOrg\Internal\Connection;
 use GoSuccess\WordpressOrg\Plugins\Plugins;
+use GoSuccess\WordpressOrg\Stats\Stats;
 use GoSuccess\WordpressOrg\Themes\Themes;
+use GoSuccess\WordpressOrg\Translations\Translations;
 
 /**
  * Client for the public wordpress.org API; entry point of the package.
@@ -29,6 +31,10 @@ final class WordpressOrg
 
     public readonly Themes $themes;
 
+    public readonly Translations $translations;
+
+    public readonly Stats $stats;
+
     /**
      * @param HttpClient|null $httpClient       Defaults to {@see CurlHttpClient}.
      * @param string          $apiBaseUri       Host of the JSON endpoints.
@@ -45,5 +51,7 @@ final class WordpressOrg
         $this->core = new Core($connection, $apiBaseUri);
         $this->plugins = new Plugins($connection, $apiBaseUri, $downloadsBaseUri, $options->batchSize);
         $this->themes = new Themes($connection, $apiBaseUri, $options->batchSize);
+        $this->translations = new Translations($connection, $apiBaseUri);
+        $this->stats = new Stats($connection, $apiBaseUri);
     }
 }

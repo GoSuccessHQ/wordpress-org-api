@@ -69,3 +69,20 @@ All captured on 2026-10-19 from `https://api.wordpress.org/core/` with `curl` an
 - Importers and locale: `importers/1.1/?locale=de_DE` returned a body byte-identical to the request without it (one request, 2026-10-19), so `Core::importers()` takes no locale. The meta.trac source is behind a bot check and was not read.
 - Handbook: no fixture; the body is a plain URL and the unit test uses the URL from the spec.
 - Serve Happy: the 400 for a missing `php_version` is not stored; the test uses the spec's `missing_param` form.
+
+## Translations and stats
+
+All captured on 2026-10-19 from `https://api.wordpress.org/` with `curl -g` and the package User-Agent.
+
+| File | Source | Captured |
+| --- | --- | --- |
+| `translations/core.json` | `translations/core/1.0/?version=6.8`, shortened from 132 sets to two (the first carries `strings`) | 2026-10-19 |
+| `translations/plugin.json` | `translations/plugins/1.0/?slug=akismet&version=5.3`, shortened to two sets (no `strings`) | 2026-10-19 |
+| `stats/wordpress.json`, `stats/php.json`, `stats/mysql.json`, `stats/locale.json` | `stats/{wordpress,php,mysql,locale}/1.0/`, complete | 2026-10-19 |
+| `stats/plugin.json` | `stats/plugin/1.0/akismet` (no trailing slash), complete | 2026-10-19 |
+| `stats/downloads.json` | `stats/plugin/1.0/downloads.php?slug=akismet&limit=3`, complete (two days came back) | 2026-10-19 |
+
+- Unknown slug, measured once per endpoint: `stats/plugin/1.0/no-such-plugin-zzzq` and `translations/plugins/1.0/?slug=no-such-plugin-zzzq&version=1.0` answered HTTP 200 with `[]` and `{"translations":[]}`, so both map to an empty list. `stats/plugin/1.0/downloads.php?slug=no-such-plugin-zzzq` answered HTTP 200 with a 180-day series of small counts (0 to 10), the same shape as a real plugin, so an unknown slug cannot be told apart there. The client does not guess; the doc comment says so.
+- `iso` keys arrive as `"1"`, `"2"`; PHP turns them into int keys, so `Translation::$iso` is `array<array-key, string>`. The same applies to an all-digit share key; the captured keys (`8.3`, `MariaDB 10.11`) are not affected.
+- Downloads: zero comes as the number `0`, every other count as a string (`"25688"`); both read as int.
+- Version-like keys in the stats (`7.4`, `10.11` inside a longer label) stay strings. The stats paths for WordPress, PHP, MySQL and locale end with `/`; the plugin one does not.

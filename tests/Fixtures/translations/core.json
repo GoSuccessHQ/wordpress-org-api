@@ -1,0 +1,34 @@
+{
+    "translations": [
+        {
+            "language": "af",
+            "version": "5.8-beta",
+            "updated": "2021-05-13 15:59:22",
+            "english_name": "Afrikaans",
+            "native_name": "Afrikaans",
+            "package": "https://downloads.wordpress.org/translation/core/5.8-beta/af.zip",
+            "iso": {
+                "1": "af",
+                "2": "afr"
+            },
+            "strings": {
+                "continue": "Gaan voort"
+            }
+        },
+        {
+            "language": "am",
+            "version": "6.0.17",
+            "updated": "2022-09-29 20:43:49",
+            "english_name": "Amharic",
+            "native_name": "አማርኛ",
+            "package": "https://downloads.wordpress.org/translation/core/6.0.17/am.zip",
+            "iso": {
+                "1": "am",
+                "2": "amh"
+            },
+            "strings": {
+                "continue": "ቀጥል"
+            }
+        }
+    ]
+}
