@@ -10,7 +10,7 @@ namespace GoSuccess\WordpressOrg\Plugins;
 final readonly class PluginPage
 {
     /**
-     * @param int          $page    0 when unreadable
+     * @param int          $page    the requested page when unreadable
      * @param int          $pages   0 when unreadable
      * @param int          $results total number of matches, 0 when unreadable
      * @param list<Plugin> $plugins

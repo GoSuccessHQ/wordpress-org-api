@@ -214,6 +214,13 @@ final class ThemesTest extends TestCase
         self::assertSame(5, $tags[0]->count);
     }
 
+    public function testHotTagWithUnusableSlugFallsBackToObjectKey(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"blog":{"slug":null,"name":"Blog","count":5}}'));
+
+        self::assertSame('blog', self::themes($http)->hotTags()[0]->slug);
+    }
+
     public function testFeatureList(): void
     {
         $http = new MockHttpClient(new Response(200, self::fixture('feature-list')));

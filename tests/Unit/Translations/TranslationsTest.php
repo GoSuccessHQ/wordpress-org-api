@@ -75,7 +75,8 @@ final class TranslationsTest extends TestCase
 
     public function testUnknownSlugIsEmpty(): void
     {
-        // Measured on 2026-10-19: HTTP 200 with an empty list.
+        // Plugin case measured on 2026-10-19: HTTP 200 with an empty list. The theme case
+        // is assumed to answer the same way; it was not measured.
         $http = new MockHttpClient(new Response(200, '{"translations":[]}'), new Response(200, '[]'));
         $translations = self::translations($http);
 

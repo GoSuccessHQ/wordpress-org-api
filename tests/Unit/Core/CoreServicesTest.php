@@ -78,6 +78,20 @@ final class CoreServicesTest extends TestCase
         );
     }
 
+    public function testHandbookUrlRejectsMalformedUrls(): void
+    {
+        $http = new MockHttpClient(
+            new Response(200, 'https://'),
+            new Response(200, 'https://x"onmouseover=1'),
+            new Response(200, "https://developer.wordpress.org/a\nhttps://developer.wordpress.org/b"),
+        );
+        $core = self::core($http);
+
+        self::assertNull($core->handbookUrl('f', '7.1'));
+        self::assertNull($core->handbookUrl('f', '7.1'));
+        self::assertNull($core->handbookUrl('f', '7.1'));
+    }
+
     public function testBrowseHappyPostsUserAgent(): void
     {
         $http = new MockHttpClient(new Response(200, self::fixture('browse-happy')));

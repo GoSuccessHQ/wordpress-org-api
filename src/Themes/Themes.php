@@ -119,8 +119,8 @@ final readonly class Themes
         foreach ($data as $key => $tag) {
             if (\is_array($tag) && !array_is_list($tag)) {
                 /** @var array<string, mixed> $tag */
-                // The answer is keyed by slug; use the key when an entry lacks its own.
-                $tags[] = ThemeTag::fromArray($tag + ['slug' => (string) $key]);
+                // The answer is keyed by slug; use the key when an entry lacks a usable slug of its own.
+                $tags[] = ThemeTag::fromArray(['slug' => Read::string($tag['slug'] ?? null) ?? (string) $key] + $tag);
             }
         }
 

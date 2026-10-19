@@ -39,6 +39,7 @@ final class ReadTest extends TestCase
         yield 'int' => [7, 7];
         yield 'digits' => ['25688', 25688];
         yield 'negative' => ['-3', -3];
+        yield 'trailing newline' => ["25\n", null];
         yield 'decimal' => ['1.5', null];
         yield 'float' => [1.5, null];
         yield 'empty' => ['', null];

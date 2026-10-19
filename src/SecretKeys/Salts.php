@@ -8,7 +8,8 @@ use SensitiveParameter;
 
 /**
  * The eight generated authentication constants. Values are secrets: they are
- * masked in `var_dump()` and similar output.
+ * masked in `var_dump()` and `print_r()`; other exports
+ * (`var_export()`, `json_encode()`, `serialize()`) show the public values.
  */
 final readonly class Salts
 {

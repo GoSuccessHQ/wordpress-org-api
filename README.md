@@ -97,7 +97,7 @@ $checksums = $wordpress->plugins->checksums('akismet', '5.7.2');    // ?PluginCh
   Pass a `FieldSelection` to choose others. 50 slugs per request worked with all
   fields (measured 2026-10-19, about 200 KB); a larger maximum has not been
   measured, which is why `batchSize` defaults to 50.
-- **Search** takes `search`, `tags`, `author`, `browse`, `page` and `perPage`
+- **Search** takes `search`, `tags`, `author`, `browse`, `user`, `page`, `perPage` and `fields`
   (themes: `theme` instead of `user`). Several tags are sent comma-joined and
   match any of them (OR); the `tag[]` form is refused by the plugin directory.
   `searchAll()` requests the next page only when you iterate to it and stops after

@@ -72,8 +72,8 @@ final readonly class Stats
     }
 
     /**
-     * Downloads per day, date => count, newest first as served. `$days` is sent as `limit`.
-     * An unknown slug is not detectable: wordpress.org answers a series of its own
+     * Downloads per day, date => count, in the order served (oldest first on
+     * 2026-10-19). `$days` is sent as `limit`. An unknown slug is not detectable: wordpress.org answers a series of its own
      * (measured), so the result for it is not empty.
      *
      * @return array<string, int>

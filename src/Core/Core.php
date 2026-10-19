@@ -123,7 +123,15 @@ final readonly class Core
         ]));
         $url = trim($response->body);
 
-        return str_starts_with($url, 'https://') && preg_match('/\s/', $url) !== 1 ? $url : null;
+        if (!str_starts_with($url, 'https://') || preg_match('/[\s"<>]/', $url) === 1) {
+            return null;
+        }
+
+        // ext-filter is not a required extension, so `filter_var()` is not used.
+        $parts = parse_url($url);
+        $host = $parts['host'] ?? '';
+
+        return ($parts['scheme'] ?? '') === 'https' && preg_match('/^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$/', $host) === 1 ? $url : null;
     }
 
     /**
