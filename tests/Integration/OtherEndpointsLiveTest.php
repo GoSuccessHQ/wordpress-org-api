@@ -7,6 +7,7 @@ namespace GoSuccess\WordpressOrg\Tests\Integration;
 use GoSuccess\WordpressOrg\Events\EventQuery;
 use GoSuccess\WordpressOrg\Patterns\PatternQuery;
 use GoSuccess\WordpressOrg\Tests\Support\LiveTestCase;
+use GoSuccess\WordpressOrg\Translations\Translation;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
 #[CoversNothing]
@@ -15,6 +16,26 @@ final class OtherEndpointsLiveTest extends LiveTestCase
     public function testTranslationsOfCore(): void
     {
         self::assertNotSame([], $this->client->translations->core('6.8'));
+    }
+
+    public function testTranslationsOfAPlugin(): void
+    {
+        self::assertContainsOnlyInstancesOf(Translation::class, $this->client->translations->plugin('akismet', '5.0'));
+    }
+
+    public function testTranslationsOfATheme(): void
+    {
+        self::assertContainsOnlyInstancesOf(Translation::class, $this->client->translations->theme('twentytwentyfive', '1.0'));
+    }
+
+    public function testStatsOfPluginVersions(): void
+    {
+        self::assertNotSame([], $this->client->stats->pluginVersions('akismet'));
+    }
+
+    public function testStatsOfPluginDownloads(): void
+    {
+        self::assertNotSame([], $this->client->stats->pluginDownloads('akismet', 7));
     }
 
     public function testStatsOfWordpressVersions(): void

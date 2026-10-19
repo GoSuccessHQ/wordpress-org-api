@@ -32,6 +32,38 @@ final class CoreLiveTest extends LiveTestCase
         self::assertNotSame([], $checksums->files);
     }
 
+    public function testCreditsHaveGroups(): void
+    {
+        self::assertNotSame([], $this->client->core->credits($this->latest())->groups);
+    }
+
+    public function testImportersAreListed(): void
+    {
+        self::assertNotSame([], $this->client->core->importers());
+    }
+
+    public function testHandbookUrlIsAnHttpsUrlOrNull(): void
+    {
+        $url = $this->client->core->handbookUrl('get_post', $this->latest());
+
+        self::assertTrue($url === null || str_starts_with($url, 'https://'));
+    }
+
+    public function testBrowseHappyRecognizesABrowser(): void
+    {
+        $browser = $this->client->core->browseHappy('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+        self::assertNotNull($browser->name);
+    }
+
+    public function testServeHappyRatesAPhpVersion(): void
+    {
+        $support = $this->client->core->serveHappy('8.3');
+
+        self::assertNotNull($support->recommendedVersion);
+        self::assertNotNull($support->minimumVersion);
+    }
+
     /**
      * One version-check request per run, shared by the tests.
      */

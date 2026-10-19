@@ -29,6 +29,14 @@ final class ThemesLiveTest extends LiveTestCase
         self::assertNotSame([], $page->themes);
     }
 
+    public function testHotTagsHaveSlugs(): void
+    {
+        $tags = $this->client->themes->hotTags(3);
+
+        self::assertNotSame([], $tags);
+        self::assertNotNull($tags[0]->slug);
+    }
+
     public function testFeatureListHasGroups(): void
     {
         self::assertNotSame([], $this->client->themes->featureList());

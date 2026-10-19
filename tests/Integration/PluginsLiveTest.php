@@ -12,12 +12,15 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 #[CoversNothing]
 final class PluginsLiveTest extends LiveTestCase
 {
+    private static ?string $akismetVersion = null;
+
     public function testLookupClassifiesFoundClosedAndUnknownSlugs(): void
     {
         $results = $this->client->plugins->lookup(['akismet', 'display-widgets', 'no-such-plugin-zzzq']);
 
         self::assertSame(['akismet', 'display-widgets', 'no-such-plugin-zzzq'], array_keys($results));
         self::assertSame(LookupStatus::Found, $results['akismet']->status);
+        self::$akismetVersion ??= $results['akismet']->version();
         self::assertNotNull($results['akismet']->version());
         self::assertSame(LookupStatus::Closed, $results['display-widgets']->status);
         self::assertNotNull($results['display-widgets']->closure?->date);
@@ -34,13 +37,21 @@ final class PluginsLiveTest extends LiveTestCase
 
     public function testChecksumsOfTheLatestAkismetVersion(): void
     {
-        $version = $this->client->plugins->lookup(['akismet'])['akismet']->version();
-
-        self::assertNotNull($version);
-
-        $checksums = $this->client->plugins->checksums('akismet', $version);
+        $checksums = $this->client->plugins->checksums('akismet', $this->akismetVersion());
 
         self::assertNotNull($checksums);
         self::assertNotSame([], $checksums->files);
+    }
+
+    /**
+     * One plugins/info batch request per run, shared by the tests.
+     */
+    private function akismetVersion(): string
+    {
+        self::$akismetVersion ??= $this->client->plugins->lookup(['akismet'])['akismet']->version();
+
+        self::assertNotNull(self::$akismetVersion);
+
+        return self::$akismetVersion;
     }
 }
