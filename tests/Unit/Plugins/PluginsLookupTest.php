@@ -63,14 +63,38 @@ final class PluginsLookupTest extends TestCase
 
     public function testDuplicatesAreSentOnce(): void
     {
-        $http = new MockHttpClient(new Response(200, '{"akismet":{"version":"1"}}'));
+        $http = new MockHttpClient(new Response(200, '{"akismet":{"version":"5.7.2"}}'));
 
         $result = self::plugins($http)->lookup(['Akismet', 'akismet', 'Akismet']);
 
-        self::assertSame('Akismet', self::slugsOf($http, 0));
+        self::assertSame('akismet', self::slugsOf($http, 0));
         self::assertSame(['Akismet', 'akismet'], array_keys($result));
-        self::assertSame(LookupStatus::Found, $result['akismet']->status);
-        self::assertSame('akismet', $result['akismet']->slug);
+        self::assertSame(LookupStatus::Found, $result['Akismet']->status);
+        self::assertSame('5.7.2', $result['Akismet']->version());
+        self::assertSame('Akismet', $result['Akismet']->slug);
+        self::assertSame('5.7.2', $result['akismet']->version());
+    }
+
+    public function testSlugIsSentLowerCased(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"akismet":{"version":"1"}}'), new Response(200, '{"version":"1","slug":"akismet"}'));
+        $plugins = self::plugins($http);
+
+        self::assertSame(LookupStatus::Found, $plugins->lookup(['Akismet'])['Akismet']->status);
+        self::assertSame('akismet', self::slugsOf($http, 0));
+
+        $info = $plugins->information('Akismet');
+        $request = self::query($http, 1)['request'];
+        self::assertIsArray($request);
+        self::assertSame('akismet', $request['slug']);
+        self::assertSame('Akismet', $info->slug);
+    }
+
+    public function testExactKeyBeatsKeyDifferingInCase(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"foo":{"error":"Plugin not found."},"Foo":{"version":"1"}}'));
+
+        self::assertSame(LookupStatus::NotFound, self::plugins($http)->lookup(['foo'])['foo']->status);
     }
 
     public function testResultKeepsCallerOrderAndKeys(): void
@@ -118,7 +142,7 @@ final class PluginsLookupTest extends TestCase
 
         $result = self::plugins($http)->lookup(['Akismet', 'gone']);
 
-        self::assertSame('Akismet,gone', self::slugsOf($http, 0));
+        self::assertSame('akismet,gone', self::slugsOf($http, 0));
         self::assertSame(['Akismet', 'gone'], array_keys($result));
         self::assertSame(LookupStatus::Found, $result['Akismet']->status);
         self::assertSame('Akismet', $result['Akismet']->slug);
@@ -175,13 +199,19 @@ final class PluginsLookupTest extends TestCase
         $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"}}'), new Response(503));
         $chunks = self::plugins($http, 1)->lookupChunks(['a', 'b']);
 
+        self::assertSame(0, $http->callCount());
         $chunks->rewind();
         self::assertSame(0, $chunks->key());
         self::assertSame(['a'], array_keys($chunks->current()));
+        self::assertSame(1, $http->callCount());
 
         $this->expectException(ServerException::class);
 
-        $chunks->next();
+        try {
+            $chunks->next();
+        } finally {
+            self::assertSame(2, $http->callCount());
+        }
     }
 
     public function testHtmlWith200Throws(): void

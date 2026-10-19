@@ -39,8 +39,8 @@ final class DirectoryClient
     }
 
     /**
-     * Yields one array per chunk of at most `batchSize` distinct slugs (compared
-     * case-insensitively). Slugs that cannot be sent are answered without a request,
+     * Yields one array per chunk of at most `batchSize` distinct slugs. Slugs are sent
+     * lower-cased and compared case-insensitively; results keep the caller's spelling. Slugs that cannot be sent are answered without a request,
      * in the chunk where they first appear in the caller's order; a chunk without any
      * sendable slug causes no request. A failing chunk throws after the earlier ones
      * were yielded.
@@ -54,10 +54,18 @@ final class DirectoryClient
         foreach ($this->plan($slugs) as $index => $chunk) {
             $entries = $chunk['send'] === [] ? [] : $this->fetch($chunk['send'], $fields);
 
+            $folded = [];
+
+            foreach ($entries as $key => $entry) {
+                $folded[strtolower((string) $key)] ??= $entry;
+            }
+
             $results = [];
 
             foreach ($chunk['callers'] as $caller) {
-                $entry = Entry::isSendable($caller) ? ($entries[strtolower($caller)] ?? null) : null;
+                $lower = strtolower($caller);
+                // The exact key wins; a key that differs only in case is the fallback.
+                $entry = Entry::isSendable($caller) ? ($entries[$lower] ?? $folded[$lower] ?? null) : null;
                 $results[$caller] = ($this->entryFactory)($caller, $entry);
             }
 
@@ -98,7 +106,7 @@ final class DirectoryClient
             return ($this->entryFactory)($slug, null);
         }
 
-        $response = $this->connection->get($this->uri(['slug' => $slug, 'fields' => $fields->toRequest()]), [404]);
+        $response = $this->connection->get($this->uri(['slug' => strtolower($slug), 'fields' => $fields->toRequest()]), [404]);
 
         return ($this->entryFactory)($slug, Json::object($response, $this->endpoint));
     }
@@ -146,7 +154,7 @@ final class DirectoryClient
                 $send[$current] = [];
             }
 
-            $send[$current][] = $slug;
+            $send[$current][] = $lower;
             $callers[$current][] = $slug;
             $chunkOfLower[$lower] = $current;
         }
@@ -165,19 +173,13 @@ final class DirectoryClient
     /**
      * @param list<string> $send
      *
-     * @return array<string, mixed> raw entries keyed by lower-cased slug
+     * @return array<string, mixed> raw entries as keyed by the server
      */
     private function fetch(array $send, FieldSelection $fields): array
     {
         $response = $this->connection->get($this->uri(['slugs' => implode(',', $send), 'fields' => $fields->toRequest()]));
 
-        $entries = [];
-
-        foreach (Json::object($response, $this->endpoint) as $key => $entry) {
-            $entries[strtolower((string) $key)] ??= $entry;
-        }
-
-        return $entries;
+        return Json::object($response, $this->endpoint);
     }
 
     /**

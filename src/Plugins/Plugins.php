@@ -36,7 +36,8 @@ final readonly class Plugins
      * Status of many plugins in few requests (chunks of `batchSize`). The result has one
      * entry per distinct slug, in the caller's order and spelling; slugs the directory did
      * not answer, and slugs that cannot be sent, are {@see \GoSuccess\WordpressOrg\Directory\LookupStatus::Unknown}.
-     * Throws if any chunk fails, never returning partial results.
+     * Throws if any chunk fails, never returning partial results. Slugs are sent lower-cased.
+     * Keys of all-digit slugs are ints, because PHP converts such array keys.
      *
      * @param list<string>        $slugs
      * @param FieldSelection|null $fields defaults to {@see FieldSelection::minimalPlugin()}
@@ -52,6 +53,7 @@ final readonly class Plugins
      * Like {@see lookup()}, but yields the results chunk by chunk (chunk index => results),
      * so callers can store them as they arrive. Unsendable slugs are reported in the chunk
      * where they first appear. A failing chunk throws after the earlier ones were yielded.
+     * Keys of all-digit slugs are ints, because PHP converts such array keys.
      *
      * @param list<string>        $slugs
      * @param FieldSelection|null $fields defaults to {@see FieldSelection::minimalPlugin()}
