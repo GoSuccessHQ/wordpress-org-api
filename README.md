@@ -84,7 +84,9 @@ $checksums = $wordpress->plugins->checksums('akismet', '5.7.2');    // ?PluginCh
   (`date`, raw `reason`, `reasonText`, `description`) and the raw `error` text.
   `Unknown` means there is no usable answer for the slug: the entry was missing or
   malformed, or the slug cannot be sent (empty, or characters outside
-  `[A-Za-z0-9._-]`). Such slugs cause no request.
+  `[A-Za-z0-9._-]`). Such slugs cause no request. An answer that contains none of
+  the slugs sent for a chunk (for example `{"error":"Invalid Input"}`) is a failed
+  chunk and throws a `SerializationException`.
 - **Slugs** are sent lower-cased; an upper-case slug is answered
   "Invalid plugin slug." by wordpress.org (measured 2026-10-19), so lower-casing
   makes `Akismet` find `akismet`. Results keep your spelling and order, duplicates

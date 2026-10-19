@@ -15,6 +15,7 @@ use GoSuccess\WordpressOrg\Plugins\Plugins;
 use GoSuccess\WordpressOrg\Tests\Support\MockHttpClient;
 use GoSuccess\WordpressOrg\WordpressOrg;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Plugins::class)]
@@ -50,7 +51,7 @@ final class PluginsLookupTest extends TestCase
 
     public function testOneRequestPerChunk(): void
     {
-        $http = new MockHttpClient(new Response(200, '{}'), new Response(200, '{}'), new Response(200, '{}'));
+        $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"}}'), new Response(200, '{"c":{"version":"1"}}'), new Response(200, '{"e":{"version":"1"}}'));
 
         self::plugins($http, 2)->lookup(['a', 'b', 'c', 'd', 'e']);
 
@@ -175,19 +176,55 @@ final class PluginsLookupTest extends TestCase
         self::assertSame(0, $http->callCount());
     }
 
-    public function testEmptyArrayBodyIsEmptyResult(): void
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function answersWithoutRequestedSlugs(): iterable
     {
-        $http = new MockHttpClient(new Response(200, '[]'));
+        yield 'empty array' => ['[]'];
+        yield 'empty object' => ['{}'];
+        yield 'error object' => ['{"error":"Invalid Input"}'];
+        yield 'only other slugs' => ['{"other":{"version":"1"}}'];
+    }
 
-        $result = self::plugins($http)->lookup(['a', 'b']);
+    #[DataProvider('answersWithoutRequestedSlugs')]
+    public function testAnswerWithoutAnyRequestedSlugThrows(string $body): void
+    {
+        $http = new MockHttpClient(new Response(200, $body));
 
-        self::assertSame(LookupStatus::Unknown, $result['a']->status);
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('plugins/info/1.2: answer contains none of the requested slugs (HTTP 200)');
+
+        self::plugins($http)->lookup(['a', 'b']);
+    }
+
+    public function testAnswerWithoutRequestedSlugsThrowsAfterEarlierChunks(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"}}'), new Response(200, '{}'));
+        $chunks = self::plugins($http, 1)->lookupChunks(['a', 'b']);
+
+        $chunks->rewind();
+        self::assertSame(['a'], array_keys($chunks->current()));
+
+        $this->expectException(SerializationException::class);
+
+        $chunks->next();
+    }
+
+    public function testOneMissingKeyOfThreeIsUnknown(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"},"c":{"version":"3"}}'));
+
+        $result = self::plugins($http)->lookup(['a', 'b', 'c']);
+
+        self::assertSame(LookupStatus::Found, $result['a']->status);
         self::assertSame(LookupStatus::Unknown, $result['b']->status);
+        self::assertSame(LookupStatus::Found, $result['c']->status);
     }
 
     public function testFailingSecondChunkThrowsFromLookup(): void
     {
-        $http = new MockHttpClient(new Response(200, '{}'), new Response(503));
+        $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"}}'), new Response(503));
 
         $this->expectException(ServerException::class);
 
@@ -260,7 +297,7 @@ final class PluginsLookupTest extends TestCase
 
     public function testMinimalFieldsAreSent(): void
     {
-        $http = new MockHttpClient(new Response(200, '{}'));
+        $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"}}'));
 
         self::plugins($http)->lookup(['a']);
 

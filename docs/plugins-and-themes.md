@@ -41,7 +41,10 @@ foreach ($wordpress->plugins->lookupChunks($slugs) as $index => $results) {
 
 If a chunk fails, `lookup()` throws and returns nothing; `lookupChunks()` has
 yielded the earlier chunks and throws at the failing one. The slugs of a failed
-chunk are never reported as `Unknown`.
+chunk are never reported as `Unknown`. An answer that contains none of the slugs
+sent for its chunk (`[]`, `{}`, `{"error":"Invalid Input"}`) counts as a failure
+and throws a `SerializationException`; a single missing key in an otherwise
+matching answer is `Unknown`.
 
 ## One slug
 

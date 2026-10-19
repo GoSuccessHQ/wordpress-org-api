@@ -111,6 +111,16 @@ final class PluginsSearchTest extends TestCase
         self::assertSame(['a', 'b'], array_map(static fn($plugin) => $plugin->slug, $page->plugins));
     }
 
+    public function testSearchRejectsErrorAnswer(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"error":"Invalid Input"}'));
+
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('plugins/info/1.2: search answered an error (HTTP 200)');
+
+        self::plugins($http)->search(new PluginQuery());
+    }
+
     public function testSearchRejectsNonObjectBody(): void
     {
         $http = new MockHttpClient(new Response(200, '"nope"'));

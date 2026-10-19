@@ -71,7 +71,7 @@ final class ThemesTest extends TestCase
 
     public function testLookupSendsMinimalFieldsAndNothingForUnsendableSlugs(): void
     {
-        $http = new MockHttpClient(new Response(200, '{}'));
+        $http = new MockHttpClient(new Response(200, '{"a":{"version":"1"}}'));
 
         self::assertSame(LookupStatus::Unknown, self::themes($http)->lookup(['..'])['..']->status);
         self::assertSame(0, $http->callCount());
@@ -79,6 +79,16 @@ final class ThemesTest extends TestCase
         self::themes($http)->lookup(['a']);
 
         self::assertSame(array_map(static fn(bool $on): string => $on ? '1' : '0', FieldSelection::minimalTheme()->toRequest()), self::request($http)['fields']);
+    }
+
+    public function testLookupAnswerWithoutRequestedSlugThrows(): void
+    {
+        $http = new MockHttpClient(new Response(200, '{"error":"Invalid Input"}'));
+
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('themes/info/1.2: answer contains none of the requested slugs (HTTP 200)');
+
+        self::themes($http)->lookup(['a']);
     }
 
     public function testInformationReadsTheTheme(): void

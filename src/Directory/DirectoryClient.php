@@ -6,6 +6,7 @@ namespace GoSuccess\WordpressOrg\Directory;
 
 use Closure;
 use Generator;
+use GoSuccess\WordpressOrg\Exception\SerializationException;
 use GoSuccess\WordpressOrg\Internal\Connection;
 use GoSuccess\WordpressOrg\Internal\Json;
 use GoSuccess\WordpressOrg\Internal\Query;
@@ -44,10 +45,11 @@ final class DirectoryClient
 
     /**
      * Yields one array per chunk of at most `batchSize` distinct slugs. Slugs are sent
-     * lower-cased and compared case-insensitively; results keep the caller's spelling. Slugs that cannot be sent are answered without a request,
-     * in the chunk where they first appear in the caller's order; a chunk without any
-     * sendable slug causes no request. A failing chunk throws after the earlier ones
-     * were yielded.
+     * lower-cased and compared case-insensitively; results keep the caller's spelling.
+     * Slugs that cannot be sent are answered without a request, in the chunk where they
+     * first appear in the caller's order; a chunk without any sendable slug causes no
+     * request. A failing chunk throws after the earlier ones were yielded, and so does
+     * an answer that contains none of the slugs sent for its chunk.
      *
      * @param list<string> $slugs
      *
@@ -93,6 +95,11 @@ final class DirectoryClient
             Query::encode(['action' => $action, 'request' => $request]),
         ));
         $data = Json::object($response, $this->endpoint);
+
+        if (\is_string($data['error'] ?? null) && !isset($data['info']) && !isset($data[$this->listKey])) {
+            throw new SerializationException(\sprintf('%s: search answered an error (HTTP %d)', $this->endpoint, $response->statusCode));
+        }
+
         $info = Read::array($data['info'] ?? null);
         $items = [];
 
@@ -258,7 +265,22 @@ final class DirectoryClient
     {
         $response = $this->connection->get($this->uri(['slugs' => implode(',', $send), 'fields' => $fields->toRequest()]));
 
-        return Json::object($response, $this->endpoint);
+        $data = Json::object($response, $this->endpoint);
+        $present = false;
+
+        foreach ($data as $key => $_) {
+            if (\in_array(strtolower((string) $key), $send, true)) {
+                $present = true;
+
+                break;
+            }
+        }
+
+        if (!$present || \is_string($data['error'] ?? null)) {
+            throw new SerializationException(\sprintf('%s: answer contains none of the requested slugs (HTTP %d)', $this->endpoint, $response->statusCode));
+        }
+
+        return $data;
     }
 
     /**
